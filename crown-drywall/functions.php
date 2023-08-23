@@ -270,3 +270,31 @@ if (!function_exists('cpt_html_block')) {
 	add_action('init', 'cpt_html_block');
 }
 
+function custom_theme_typography_styles() {
+    $css = '';
+
+    // Define the typography elements you want to customize
+    $typography_elements = array(
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    );
+
+    foreach ($typography_elements as $element) {
+        $font_size = get_theme_mod("{$element}_font_size", '');
+        if ($font_size !== '') {
+            $css .= "{$element} { font-size: {$font_size}; }\n";
+        }
+        // Add more typography properties as needed
+    }
+
+    return $css;
+}
+function custom_theme_output_typography_styles() {
+    $typography_css = custom_theme_typography_styles();
+    if (!empty($typography_css)) {
+        echo '<style type="text/css">' . $typography_css . '</style>';
+    }
+}
+
+// Hook the function to wp_head for including in the header
+add_action('wp_head', 'custom_theme_output_typography_styles');
+

@@ -5,6 +5,10 @@ function custom_header_options()
     add_settings_section('header_section', 'Select Header', null, 'headers-options');
     add_settings_field('selected_header', 'Select Header Style', 'header_option_display', 'headers-options', 'header_section');
     register_setting("header_section", "selected_header");
+
+    add_settings_section('footer_section', 'Select Footer', null, 'headers-options');
+    add_settings_field('selected_footer', 'Select Footer Style', 'footer_option_display', 'headers-options', 'footer_section');
+    register_setting("footer_section", "selected_footer");
 }
 add_action('admin_init', 'custom_header_options');
 
@@ -19,6 +23,27 @@ function header_option_display()
         <option value="header3" <?php selected($selected, 'header3'); ?>>Header 3</option>
     </select>
 <?php }
+
+function footer_option_display()
+{
+    $cmsblock = get_post_type_object('cms-block');
+    $cmsblock_posts = get_posts(array(
+        'post_type' => 'cms-block',
+    ));
+    $selected_footer = get_option('selected_footer');
+    ?>
+    <select name="selected_footer">
+        <option value="default-footer">Default Footer</option>
+        <?php
+        foreach ($cmsblock_posts as $post) {
+            ?>
+            <option value="<?php echo $post->post_name; ?>" <?php selected($selected_footer, $post->post_name); ?>><?php echo $post->post_name; ?></option>
+            <?php
+        }
+        ?>
+    </select>
+    <?php
+}
 
 function selected_header_display()
 {
@@ -37,6 +62,7 @@ function header_settings_page()
         <form method="post" action="options.php">
             <?php
             settings_fields("header_section");
+            settings_fields("footer_section");
             do_settings_sections("headers-options");
             submit_button();
             ?>

@@ -16,6 +16,7 @@ function crownDrywall_customize_register($wp_customize) {
         'section' => 'crownDrywall_theme_options',
         'type' => 'text',
     ));
+    add_action('customize_register', 'crownDrywall_customize_register');
     $social_platforms = array(
         'facebook' => __('Facebook URL'),
         'instagram' => __('Instagram URL'),
@@ -96,11 +97,35 @@ function crownDrywall_customize_register($wp_customize) {
         'type' => 'select',
         'choices' => $font_choices,
     ));
+
+    $wp_customize->add_section('typography_section', array(
+        'title' => __('Typography', 'crownDrywall'),
+        'priority' => 20,
+    ));
+
+    // Define the typography elements you want to customize
+    $typography_elements = array(
+        'h1' => __('H1 Font Size', 'crownDrywall'),
+        'h2' => __('H2 Font Size', 'crownDrywall'),
+        'h3' => __('H3 Font Size', 'crownDrywall'),
+        // Add more elements as needed
+    );
+
+    // Add controls for each typography element
+    foreach ($typography_elements as $element => $label) {
+        // Add setting for typography property
+        $wp_customize->add_setting("{$element}_font_size", array(
+            'default' => '', // Set the default font size here
+            'sanitize_callback' => 'sanitize_text_field', 
+        ));
+
+        // Add control for typography property
+        $wp_customize->add_control("{$element}_font_size", array(
+            'label' => $label,
+            'section' => 'typography_section',
+            'settings' => "{$element}_font_size",
+            'type' => 'text',
+        ));
+    }
 }
 add_action('customize_register', 'crownDrywall_customize_register');
-
-
-
-
-
-
